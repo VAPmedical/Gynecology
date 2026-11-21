@@ -86,12 +86,12 @@ body { font-family: -apple-system, Arial, sans-serif; background: #f0f0f0; displ
     <div><div class="mode-title">הכתבה</div><div class="mode-desc">ענה בדיבור — ללא הקראה, ללא כפתורי בחירה</div></div>
   </button>
   <button class="mode-btn" onclick="startMode('read')">
-    <div class="mode-icon">👁️</div>
-    <div><div class="mode-title">קריאה</div><div class="mode-desc">השאלות יוצגו על המסך — ניתן לענות בכתיבה או בדיבור</div></div>
+    <div class="mode-icon">✍️</div>
+    <div><div class="mode-title">כתיבה</div><div class="mode-desc">השאלות יוצגו על המסך — ענה בכתיבה או בדיבור, ללא הקראה</div></div>
   </button>
-  <button id="listen-btn" class="mode-btn" onclick="startMode('listen')">
+  <button id="listen-btn" class="mode-btn" onclick="iosAudioUnlock();startMode('listen')">
     <div class="mode-icon">🔊</div>
-    <div><div class="mode-title">האזנה + קול</div><div class="mode-desc">השאלות יוקראו בקול נשי — ניתן לענות בכתיבה או בדיבור</div></div>
+    <div><div class="mode-title">שיחה</div><div class="mode-desc">השאלות יוקראו בקול נשי — ניתן לענות בכתיבה או בדיבור</div></div>
   </button>
 </div>
 
@@ -239,6 +239,23 @@ function goBack(){
   prev.run();
   // אפס מיקרופון לאחר שהשאלה נטענת
   setTimeout(()=>setupSTT(),400);
+}
+
+// ─── iOS Audio Unlock ────────────────────────────────────
+function iosAudioUnlock(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const buf=ctx.createBuffer(1,1,22050);
+    const src=ctx.createBufferSource();
+    src.buffer=buf;
+    src.connect(ctx.destination);
+    src.start(0);
+    ctx.resume();
+  }catch(e){}
+  try{
+    const a=new Audio();
+    a.play().catch(()=>{});
+  }catch(e){}
 }
 
 // ─── TTS ─────────────────────────────────────────────────
